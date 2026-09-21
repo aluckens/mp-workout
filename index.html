@@ -3,7 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Select Exercises</title>
+<title>MP-Workout</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+CjxyZWN0IHdpZHRoPSI2NCIgaGVpZ2h0PSI2NCIgcng9IjE0IiBmaWxsPSIjMTcxODFiIi8+CjxnIGZpbGw9IiNmZmNjMzMiPgo8cmVjdCB4PSIxNyIgeT0iMzAiIHdpZHRoPSIzMCIgaGVpZ2h0PSI0IiByeD0iMiIvPgo8cmVjdCB4PSI5IiB5PSIxOCIgd2lkdGg9IjciIGhlaWdodD0iMjgiIHJ4PSIyLjUiLz4KPHJlY3QgeD0iMyIgeT0iMjMiIHdpZHRoPSI2IiBoZWlnaHQ9IjE4IiByeD0iMi41Ii8+CjxyZWN0IHg9IjQ4IiB5PSIxOCIgd2lkdGg9IjciIGhlaWdodD0iMjgiIHJ4PSIyLjUiLz4KPHJlY3QgeD0iNTUiIHk9IjIzIiB3aWR0aD0iNiIgaGVpZ2h0PSIxOCIgcng9IjIuNSIvPgo8L2c+Cjwvc3ZnPgo=">
 <style>
   :root{
     --yellow:#ffcc33;
@@ -65,29 +66,94 @@
     flex-shrink:0;
     background:var(--bg);
   }
-  header .back{
-    font-size:22px; color:var(--text); cursor:pointer; user-select:none;
-    width:28px; text-align:center;
-  }
   header h1{
     font-size:clamp(18px,4vw,22px);
     margin:0; flex:1;
   }
-  header .search-wrap{position:relative;}
-  header .search-icon{font-size:19px; cursor:pointer; padding:4px;}
-  #searchBox{
-    display:none;
-    position:absolute; right:0; top:110%;
-    width:min(260px, 60vw);
-    padding:8px 12px;
-    border-radius:10px;
-    border:1px solid var(--border);
+
+  .tracker-bar{
+    display:flex;
+    gap:10px;
+    padding:10px 14px;
+    border-bottom:1px solid var(--border);
+    flex-shrink:0;
     background:var(--panel);
-    color:var(--text);
-    font-size:14px;
-    z-index:5;
   }
-  #searchBox.open{display:block;}
+  .tracker-block{
+    flex:1;
+    min-width:0;
+    background:var(--bg);
+    border-radius:14px;
+    padding:8px 10px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:6px;
+  }
+  .tracker-title{
+    font-size:11px;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:.04em;
+    color:var(--text-dim);
+  }
+  .stepper{
+    display:flex;
+    align-items:center;
+    gap:clamp(10px,4vw,18px);
+  }
+  .step-btn{
+    width:32px; height:32px;
+    flex-shrink:0;
+    border-radius:50%;
+    border:none;
+    background:var(--panel-2);
+    color:var(--text);
+    font-size:18px;
+    font-weight:700;
+    display:flex; align-items:center; justify-content:center;
+    cursor:pointer;
+    touch-action:manipulation;
+    user-select:none;
+  }
+  .step-btn:active{ background:var(--yellow); color:#1a1a1a; }
+  .stepper-value{
+    font-size:20px;
+    font-weight:800;
+    min-width:26px;
+    text-align:center;
+    font-variant-numeric:tabular-nums;
+  }
+  .timer-row{
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .timer-time{
+    font-size:18px;
+    font-weight:800;
+    font-variant-numeric:tabular-nums;
+    min-width:52px;
+    text-align:center;
+    cursor:pointer;
+    user-select:none;
+    touch-action:manipulation;
+  }
+  .timer-time.running{ color:var(--yellow-dark); }
+  .timer-play, .timer-reset{
+    width:30px; height:30px;
+    flex-shrink:0;
+    border-radius:50%;
+    border:none;
+    font-size:13px;
+    display:flex; align-items:center; justify-content:center;
+    cursor:pointer;
+    touch-action:manipulation;
+    user-select:none;
+  }
+  .timer-play{ background:var(--yellow); color:#1a1a1a; }
+  .timer-reset{ background:var(--panel-2); color:var(--text); }
+  .timer-play:active, .timer-reset:active{ opacity:.8; }
 
   .layout{
     flex:1;
@@ -98,7 +164,7 @@
 
   /* Sidebar */
   nav.sidebar{
-    width:110px;
+    width:clamp(76px,24vw,110px);
     flex-shrink:0;
     background:var(--panel);
     overflow-y:auto;
@@ -106,14 +172,15 @@
   }
   nav.sidebar::-webkit-scrollbar{display:none;}
   .side-item{
-    padding:16px 10px;
+    padding:16px 8px;
     text-align:center;
-    font-size:14px;
+    font-size:clamp(12px,3.2vw,14px);
     color:var(--text-dim);
     cursor:pointer;
     border-left:4px solid transparent;
     position:relative;
     transition:background .15s;
+    touch-action:manipulation;
   }
   .side-item.active{
     background:var(--bg);
@@ -129,7 +196,7 @@
     min-width:0;
     overflow-y:auto;
     -webkit-overflow-scrolling:touch;
-    padding:14px 14px 100px 14px;
+    padding:14px 14px calc(14px + env(safe-area-inset-bottom,0px)) 14px;
   }
 
   .equip-tabs{
@@ -142,15 +209,16 @@
   .equip-tabs::-webkit-scrollbar{display:none;}
   .equip-tab{
     flex-shrink:0;
-    padding:10px 18px;
+    padding:10px 16px;
     border-radius:12px;
     background:var(--panel-2);
     color:var(--text);
-    font-size:14px;
+    font-size:clamp(13px,3.4vw,14px);
     font-weight:600;
     cursor:pointer;
     white-space:nowrap;
     border:1px solid transparent;
+    touch-action:manipulation;
   }
   .equip-tab.active{
     background:var(--yellow);
@@ -166,7 +234,7 @@
   .grid{
     display:grid;
     grid-template-columns:repeat(2, 1fr);
-    gap:16px;
+    gap:clamp(10px,3vw,16px);
   }
   @media (min-width:560px){
     .grid{grid-template-columns:repeat(3, 1fr);}
@@ -179,7 +247,9 @@
     cursor:pointer;
     user-select:none;
     position:relative;
+    touch-action:manipulation;
   }
+  .card:active .card-img{ transform:scale(.97); }
   .card-img{
     background:var(--card-bg);
     border-radius:16px;
@@ -188,39 +258,24 @@
     align-items:center;
     justify-content:center;
     position:relative;
-    border:2px solid transparent;
     overflow:hidden;
     padding:14%;
+    transition:transform .1s ease;
   }
   .card-img svg{
     width:100%;
     height:100%;
     overflow:visible;
   }
+  .card-img img{
+    width:100%;
+    height:100%;
+    object-fit:contain;
+  }
   .fig{ fill:none; stroke:#8a8d92; stroke-width:5; stroke-linecap:round; stroke-linejoin:round; }
   .fig-accent{ fill:none; stroke:#e0463f; stroke-width:5; stroke-linecap:round; stroke-linejoin:round; }
   .fig-fill{ fill:#c7c9cc; stroke:none; }
   .fig-eq{ fill:none; stroke:#3a3b3e; stroke-width:6; stroke-linecap:round; }
-  .card.selected .card-img{
-    border-color:var(--yellow-dark);
-    box-shadow:0 0 0 2px var(--yellow-dark) inset;
-  }
-  .check{
-    position:absolute;
-    top:8px; right:8px;
-    width:24px; height:24px;
-    border-radius:50%;
-    background:#fff;
-    border:2px solid #c9cacd;
-    display:flex; align-items:center; justify-content:center;
-    font-size:14px;
-    color:#fff;
-  }
-  .card.selected .check{
-    background:var(--yellow-dark);
-    border-color:var(--yellow-dark);
-    color:#1a1a1a;
-  }
   .card-title{
     margin-top:8px;
     font-size:14px;
@@ -240,34 +295,137 @@
     font-size:15px;
   }
 
-  footer{
+  /* Fullscreen exercise view */
+  .modal-overlay{
     position:fixed;
-    left:14px; right:14px;
-    bottom:calc(14px + env(safe-area-inset-bottom,0px));
-    background:var(--bar-bg);
-    color:var(--bar-text);
-    text-align:center;
-    padding:16px;
-    border-radius:16px;
-    font-weight:800;
-    font-size:16px;
-    cursor:pointer;
-    box-shadow:0 6px 20px rgba(0,0,0,.25);
-    z-index:10;
+    inset:0;
+    background:var(--bg);
+    z-index:50;
+    display:flex;
+    flex-direction:column;
+    transform:translateY(100%);
+    transition:transform .25s ease;
   }
-  footer:active{opacity:.85;}
+  .modal-overlay.open{ transform:translateY(0); }
+  .modal-header{
+    display:flex; align-items:center; gap:12px;
+    padding:14px 16px;
+    padding-top:calc(14px + env(safe-area-inset-top,0px));
+    border-bottom:1px solid var(--border);
+    flex-shrink:0;
+  }
+  .modal-header h2{
+    font-size:clamp(17px,4.5vw,20px);
+    margin:0; flex:1;
+    overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+  }
+  .modal-header .close{
+    font-size:20px; color:var(--text); cursor:pointer; user-select:none;
+    width:32px; height:32px; flex-shrink:0;
+    display:flex; align-items:center; justify-content:center;
+    border-radius:50%;
+    background:var(--panel-2);
+    touch-action:manipulation;
+  }
+  .modal-header .close:active{ opacity:.7; }
+  .modal-body{
+    flex:1;
+    overflow-y:auto;
+    -webkit-overflow-scrolling:touch;
+    padding:20px;
+    padding-bottom:calc(20px + env(safe-area-inset-bottom,0px));
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+  }
+  .modal-media{
+    width:100%;
+    max-width:480px;
+    aspect-ratio:1/1;
+    background:var(--card-bg);
+    border-radius:20px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    overflow:hidden;
+    padding:8%;
+  }
+  .modal-media img{ width:100%; height:100%; object-fit:contain; }
+  .modal-media svg{ width:100%; height:100%; overflow:visible; }
+  .modal-sub{
+    margin-top:18px;
+    font-size:15px;
+    color:var(--text-dim);
+    text-align:center;
+  }
+  .modal-stats{
+    display:flex;
+    gap:12px;
+    width:100%;
+    max-width:480px;
+    margin-top:20px;
+  }
+  .stat-field{
+    flex:1;
+    background:var(--panel);
+    border-radius:14px;
+    padding:10px 14px;
+    display:flex;
+    flex-direction:column;
+    gap:4px;
+  }
+  .stat-field label{
+    font-size:11px;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:.04em;
+    color:var(--text-dim);
+  }
+  .stat-field input{
+    border:none;
+    background:transparent;
+    color:var(--text);
+    font-size:20px;
+    font-weight:800;
+    font-variant-numeric:tabular-nums;
+    width:100%;
+    padding:0;
+    -webkit-appearance:none;
+    appearance:none;
+  }
+  .stat-field input:focus{ outline:none; }
+  .card-stat{
+    margin-top:2px;
+    font-size:12px;
+    font-weight:700;
+    color:var(--yellow-dark);
+  }
 </style>
 </head>
 <body>
 
 <header>
-  <div class="back" onclick="history.length>1?history.back():null">‹</div>
-  <h1>Select Exercises</h1>
-  <div class="search-wrap">
-    <div class="search-icon" onclick="toggleSearch()">🔍</div>
-    <input id="searchBox" type="text" placeholder="Search exercise..." oninput="renderExercises()">
-  </div>
+  <h1>MP-Workout</h1>
 </header>
+
+<div class="tracker-bar">
+  <div class="tracker-block">
+    <div class="tracker-title">Reps</div>
+    <div class="stepper">
+      <button class="step-btn" onclick="changeReps(-1)">−</button>
+      <div class="stepper-value" id="repValue">0</div>
+      <button class="step-btn" onclick="changeReps(1)">+</button>
+    </div>
+  </div>
+  <div class="tracker-block">
+    <div class="tracker-title">Rest Timer</div>
+    <div class="timer-row">
+      <div class="timer-time" id="timerTime" onclick="cycleTimerPreset()">01:00</div>
+      <button class="timer-play" id="timerPlayBtn" onclick="toggleTimer()">▶</button>
+      <button class="timer-reset" onclick="resetTimer()">↺</button>
+    </div>
+  </div>
+</div>
 
 <div class="layout">
   <nav class="sidebar" id="sidebar"></nav>
@@ -278,7 +436,26 @@
   </main>
 </div>
 
-<footer id="footerBar" onclick="onDone()">0 Selected</footer>
+<div class="modal-overlay" id="exerciseModal">
+  <div class="modal-header">
+    <h2 id="modalTitle"></h2>
+    <div class="close" onclick="closeModal()">✕</div>
+  </div>
+  <div class="modal-body">
+    <div class="modal-media" id="modalMedia"></div>
+    <div class="modal-sub" id="modalSub"></div>
+    <div class="modal-stats">
+      <div class="stat-field">
+        <label for="maxWeightInput">Max Weight (lb)</label>
+        <input id="maxWeightInput" type="number" inputmode="decimal" min="0" placeholder="0">
+      </div>
+      <div class="stat-field">
+        <label for="maxRepsInput">Reps</label>
+        <input id="maxRepsInput" type="number" inputmode="numeric" min="0" placeholder="0">
+      </div>
+    </div>
+  </div>
+</div>
 
 <script>
 
@@ -299,13 +476,61 @@ Object.keys(EXDATA).forEach(body => {
 
 let currentBody = "Chest";
 let currentEquip = null;
-let selected = new Set(); // "body||equip||name"
+let currentModalKey = null;
 
 const sidebarEl = document.getElementById('sidebar');
 const equipTabsEl = document.getElementById('equipTabs');
 const gridEl = document.getElementById('grid');
 const sectionTitleEl = document.getElementById('sectionTitle');
-const footerBar = document.getElementById('footerBar');
+const modalEl = document.getElementById('exerciseModal');
+const modalTitleEl = document.getElementById('modalTitle');
+const modalMediaEl = document.getElementById('modalMedia');
+const modalSubEl = document.getElementById('modalSub');
+const maxWeightInputEl = document.getElementById('maxWeightInput');
+const maxRepsInputEl = document.getElementById('maxRepsInput');
+
+// Per-exercise stats, persisted to localStorage
+const STATS_KEY = 'mpWorkoutExerciseStats';
+
+function loadStats(){
+  try{
+    return JSON.parse(localStorage.getItem(STATS_KEY)) || {};
+  }catch(e){
+    return {};
+  }
+}
+
+function saveStats(){
+  try{
+    localStorage.setItem(STATS_KEY, JSON.stringify(exerciseStats));
+  }catch(e){}
+}
+
+let exerciseStats = loadStats();
+
+function statKey(ex){
+  return `${ex.body}||${ex.eq}||${ex.name}`;
+}
+
+function updateStat(field, value){
+  if(!currentModalKey) return;
+  const num = value === '' ? undefined : Number(value);
+  const existing = { ...(exerciseStats[currentModalKey] || {}) };
+  if(num === undefined || isNaN(num)){
+    delete existing[field];
+  } else {
+    existing[field] = num;
+  }
+  if(Object.keys(existing).length === 0){
+    delete exerciseStats[currentModalKey];
+  } else {
+    exerciseStats[currentModalKey] = existing;
+  }
+  saveStats();
+}
+
+maxWeightInputEl.oninput = ()=> updateStat('weight', maxWeightInputEl.value);
+maxRepsInputEl.oninput = ()=> updateStat('reps', maxRepsInputEl.value);
 
 function buildSidebar(){
   sidebarEl.innerHTML = '';
@@ -344,24 +569,7 @@ function buildEquipTabs(){
 
 function renderExercises(){
   gridEl.innerHTML = '';
-  const query = document.getElementById('searchBox').value.trim().toLowerCase();
   let list = (EXDATA[currentBody] && EXDATA[currentBody][currentEquip]) || [];
-
-  if(query){
-    sectionTitleEl.textContent = `Results for "${query}"`;
-    let matches = [];
-    Object.entries(EXDATA).forEach(([body, equips])=>{
-      Object.entries(equips).forEach(([eq, exs])=>{
-        exs.forEach(ex=>{
-          if(ex.name.toLowerCase().includes(query)){
-            matches.push({...ex, body, eq});
-          }
-        });
-      });
-    });
-    renderCards(matches, true);
-    return;
-  }
 
   sectionTitleEl.textContent = `${currentBody},${currentEquip || ''}`;
   renderCards(list.map(ex=>({...ex, body:currentBody, eq:currentEquip})), false);
@@ -373,47 +581,119 @@ function renderCards(list, showTag){
     return;
   }
   list.forEach(ex=>{
-    const key = `${ex.body}||${ex.eq}||${ex.name}`;
     const card = document.createElement('div');
-    card.className = 'card' + (selected.has(key) ? ' selected' : '');
+    card.className = 'card';
     const media = ex.gif
       ? `<img src="data:image/gif;base64,${ex.gif}" alt="${ex.name}" loading="lazy">`
       : (ex.img
         ? `<img src="data:image/jpeg;base64,${ex.img}" alt="${ex.name}" loading="lazy">`
         : iconFallback());
+    const stat = exerciseStats[statKey(ex)];
+    const statParts = [];
+    if(stat && stat.weight !== undefined) statParts.push(`${stat.weight} lb`);
+    if(stat && stat.reps !== undefined) statParts.push(`${stat.reps} reps`);
     card.innerHTML = `
       <div class="card-img">
         ${media}
-        <div class="check">${selected.has(key) ? '✓' : ''}</div>
       </div>
       <div class="card-title">${ex.name}</div>
+      ${statParts.length ? `<div class="card-stat">${statParts.join(' × ')}</div>` : ''}
       ${showTag ? `<div class="card-sub">${ex.body} · ${ex.eq}</div>` : ''}
     `;
-    card.onclick = ()=>{
-      if(selected.has(key)) selected.delete(key);
-      else selected.add(key);
-      renderExercises();
-      updateFooter();
-    };
+    card.onclick = ()=> openModal(ex);
     gridEl.appendChild(card);
   });
 }
 
-function updateFooter(){
-  footerBar.textContent = `${selected.size} Selected`;
+function openModal(ex){
+  currentModalKey = statKey(ex);
+  modalTitleEl.textContent = ex.name;
+  modalMediaEl.innerHTML = ex.gif
+    ? `<img src="data:image/gif;base64,${ex.gif}" alt="${ex.name}">`
+    : (ex.img
+      ? `<img src="data:image/jpeg;base64,${ex.img}" alt="${ex.name}">`
+      : iconFallback());
+  modalSubEl.textContent = `${ex.body} · ${ex.eq}`;
+  const stat = exerciseStats[currentModalKey] || {};
+  maxWeightInputEl.value = stat.weight !== undefined ? stat.weight : '';
+  maxRepsInputEl.value = stat.reps !== undefined ? stat.reps : '';
+  modalEl.classList.add('open');
 }
 
-function toggleSearch(){
-  const box = document.getElementById('searchBox');
-  box.classList.toggle('open');
-  if(box.classList.contains('open')) box.focus();
-  else { box.value=''; renderExercises(); }
+function closeModal(){
+  modalEl.classList.remove('open');
+  currentModalKey = null;
+  renderExercises();
 }
 
-function onDone(){
-  if(selected.size === 0) return;
-  const names = Array.from(selected).map(k=>k.split('||')[2]);
-  alert(`Selected exercises:\n\n${names.join('\n')}`);
+// Rep tracker
+let reps = 0;
+const repValueEl = document.getElementById('repValue');
+
+function changeReps(delta){
+  reps = Math.max(0, reps + delta);
+  repValueEl.textContent = reps;
+}
+
+// Rest timer
+const REST_PRESETS = [30, 60, 90, 120];
+let presetIndex = 1;
+let timerTotal = REST_PRESETS[presetIndex];
+let timerRemaining = timerTotal;
+let timerInterval = null;
+
+const timerTimeEl = document.getElementById('timerTime');
+const timerPlayBtn = document.getElementById('timerPlayBtn');
+
+function formatTime(sec){
+  const m = Math.floor(sec/60).toString().padStart(2,'0');
+  const s = Math.floor(sec%60).toString().padStart(2,'0');
+  return `${m}:${s}`;
+}
+
+function renderTimer(){
+  timerTimeEl.textContent = formatTime(timerRemaining);
+}
+
+function cycleTimerPreset(){
+  if(timerInterval) return;
+  presetIndex = (presetIndex + 1) % REST_PRESETS.length;
+  timerTotal = REST_PRESETS[presetIndex];
+  timerRemaining = timerTotal;
+  renderTimer();
+}
+
+function toggleTimer(){
+  if(timerInterval){
+    clearInterval(timerInterval);
+    timerInterval = null;
+    timerPlayBtn.textContent = '▶';
+    timerTimeEl.classList.remove('running');
+    return;
+  }
+  if(timerRemaining <= 0) timerRemaining = timerTotal;
+  timerPlayBtn.textContent = '❚❚';
+  timerTimeEl.classList.add('running');
+  timerInterval = setInterval(()=>{
+    timerRemaining--;
+    renderTimer();
+    if(timerRemaining <= 0){
+      clearInterval(timerInterval);
+      timerInterval = null;
+      timerPlayBtn.textContent = '▶';
+      timerTimeEl.classList.remove('running');
+      if(navigator.vibrate) navigator.vibrate([200,100,200]);
+    }
+  }, 1000);
+}
+
+function resetTimer(){
+  clearInterval(timerInterval);
+  timerInterval = null;
+  timerRemaining = timerTotal;
+  timerPlayBtn.textContent = '▶';
+  timerTimeEl.classList.remove('running');
+  renderTimer();
 }
 
 // init
@@ -421,7 +701,7 @@ currentEquip = Object.keys(EXDATA[currentBody])[0];
 buildSidebar();
 buildEquipTabs();
 renderExercises();
-updateFooter();
+renderTimer();
 
 </script>
 </body>
